@@ -1,0 +1,21 @@
+{
+    "name": "fannypack/ledger",
+    "description": "ledger implementation for laravel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mpande Andrew",
+            "email": "andrewmvp007@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "FannyPack\\Ledger\\": "src/"
+        }
+    },
+    "require": {
+        "illuminate/database": "~5.4",
+        "illuminate/support": "~5.4"
+    }
+}
