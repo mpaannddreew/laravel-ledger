@@ -13,7 +13,8 @@ class LedgerEntry extends Model
      */
     protected $casts = [
         'credit' => 'boolean',
-        'debit' => 'boolean'
+        'debit' => 'boolean',
+        'created_at' => 'datetime'
     ];
 
     /**

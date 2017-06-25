@@ -11,9 +11,24 @@ namespace FannyPack\Ledger;
 
 use FannyPack\Ledger\Exceptions\InvalidRecipientException;
 use FannyPack\Ledger\Exceptions\InsufficientBalanceException;
+use Illuminate\Routing\Router;
 
 class Ledger
 {
+    /**
+     * @var Router
+     */
+    protected $router;
+
+    /**
+     * Ledger constructor.
+     * @param Router $router
+     */
+    public function __construct(Router $router)
+    {
+        $this->router = $router;
+    }
+
     /**
      * debit a ledgerable instance
      * 
@@ -127,5 +142,15 @@ class Ledger
 
         $this->credit($from, $amount, $reason);
         return $this->debit($to, $amount, $reason);
+    }
+
+    /**
+     * register routes for ledger api access
+     */
+    public function routes()
+    {
+        $this->router->group(['namespace' => 'FannyPack\Ledger\Http\Controllers'], function() {
+            $this->router->resource('ledger', 'LedgerController');
+        });
     }
 }
