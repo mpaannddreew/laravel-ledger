@@ -29,7 +29,8 @@ class LedgerController extends Controller
      */
     public function __construct(Ledger $ledger, Validator $validator)
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api')->except('index');
+        $this->middleware(['web', 'auth'])->only('index');
         $this->ledger = $ledger;
         $this->validator = $validator;
     }
@@ -75,7 +76,7 @@ class LedgerController extends Controller
             'count' => count($entries),
             'offset' => $offset,
             'limit' => $limit,
-            'entries' => $entries
+            'data' => $entries
         ];
 
         if ($days) $response['days_ago'] = $days;
@@ -106,7 +107,7 @@ class LedgerController extends Controller
         $entry = $this->ledger->find((int)$entry_id);
         $response = [
             'success' => true,
-            'entry' => $entry
+            'item' => $entry
         ];
 
         return response()->json($response);

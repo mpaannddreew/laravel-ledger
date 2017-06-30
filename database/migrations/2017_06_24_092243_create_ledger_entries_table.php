@@ -16,6 +16,8 @@ class CreateLedgerEntriesTable extends Migration
         Schema::create('ledger_entries', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('ledgerable');
+            $table->string('money_to')->nullable();
+            $table->string('money_from')->nullable();
             $table->text('reason');
             $table->boolean('credit')->default(0);
             $table->boolean('debit')->default(0);

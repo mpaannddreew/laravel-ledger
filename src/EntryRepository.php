@@ -52,11 +52,16 @@ class EntryRepository
         if($days_ago)
             return $this->fromDaysAgo($days_ago, $offset, $limit);
 
-        return LedgerEntry::select($this->fields)
-            ->latest()
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+        $response = [];
+        $entries = LedgerEntry::select()->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();;
+        foreach ($entries as $entry)
+        {
+            $item = $entry->toArray();
+            $item['name'] = $entry->ledgerable->name;
+            array_push($response, $item);
+        }
+
+        return $response;
     }
 
     /**
@@ -76,12 +81,15 @@ class EntryRepository
         if (!array_has($this->entry_type, strtolower($type)))
             return [];
 
-        return LedgerEntry::select($this->fields)
-            ->where(strtolower($type), '=', 1)
-            ->latest()
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+        $response = [];
+        $entries = LedgerEntry::select()->where(strtolower($type), '=', 1)->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
+        foreach ($entries as $entry)
+        {
+            $item = $entry->toArray();
+            $item['name'] = $entry->ledgerable->name;
+            array_push($response, $item);
+        }
+        return $response;
     }
 
     /**
@@ -92,7 +100,12 @@ class EntryRepository
      */
     public function find($entry_id)
     {
-        return LedgerEntry::find($entry_id);
+        $entry = LedgerEntry::find($entry_id);
+
+        $item = $entry->toArray();
+        $item['name'] = $entry->ledgerable->name;
+
+        return $item;
     }
 
     /**
@@ -107,6 +120,7 @@ class EntryRepository
      */
     public function findFromDate($date, $days_from_date = 1, $type = null, $offset = 0, $limit = 10)
     {
+        $response = [];
         list($year, $month, $day) = $this->getYearMonthDay($date);
         
         $datetime = $this->time->setDate($year, $month, $day)->setTimeFromTimeString("00:01:00");
@@ -115,23 +129,31 @@ class EntryRepository
             if (!array_has($this->entry_type, strtolower($type)))
                 return [];
 
-            return LedgerEntry::select($this->fields)
-                ->where($type, '=', 1)
-                ->where('created_at', '>=', $datetime)
+
+            $entries = LedgerEntry::select()->where($type, '=', 1)->where('created_at', '>=', $datetime)
 //                ->where('created_at', '<=', $datetime->addDay($days_from_date))
-                ->latest()
-                ->skip($offset)
-                ->take($limit)
-                ->get();
+                ->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
+            foreach ($entries as $entry)
+            {
+                $item = $entry->toArray();
+                $item['name'] = $entry->ledgerable->name;
+                array_push($response, $item);
+            }
+
+            return $response;
         }
 
-        return LedgerEntry::select($this->fields)
-            ->where('created_at', '>=', $datetime)
+        $entries = LedgerEntry::select()->where('created_at', '>=', $datetime)
 //            ->where('created_at', '<=', $datetime->addDay($days_from_date))
-            ->latest()
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+            ->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
+        foreach ($entries as $entry)
+        {
+            $item = $entry->toArray();
+            $item['name'] = $entry->ledgerable->name;
+            array_push($response, $item);
+        }
+
+        return $response;
     }
 
     /**
@@ -145,27 +167,33 @@ class EntryRepository
      */
     protected function fromDaysAgo($type = null, $days_ago = 0, $offset = 0, $limit = 10)
     {
+        $response = [];
         $datetime = $this->dateFromThen($days_ago);
 
         if ($type){
             if (!array_has($this->entry_type, strtolower($type)))
                 return [];
 
-            return LedgerEntry::select($this->fields)
-                ->where($type, '=', 1)
-                ->where('created_at', '>=', $datetime)
-                ->latest()
-                ->skip($offset)
-                ->take($limit)
-                ->get();
+            $entries = LedgerEntry::select()->where($type, '=', 1)->where('created_at', '>=', $datetime)->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
+            foreach ($entries as $entry)
+            {
+                $item = $entry->toArray();
+                $item['name'] = $entry->ledgerable->name;
+                array_push($response, $item);
+            }
+
+            return $response;
         }
 
-        return LedgerEntry::select($this->fields)
-            ->where('created_at', '>=', $datetime)
-            ->latest()
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+        $entries = LedgerEntry::select()->where('created_at', '>=', $datetime)->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
+        foreach ($entries as $entry)
+        {
+            $item = $entry->toArray();
+            $item['name'] = $entry->ledgerable->name;
+            array_push($response, $item);
+        }
+
+        return $response;
     }
 
     /**

@@ -46,26 +46,28 @@ trait Ledgerable
 
     /**
      * debit entity
-     * 
+     *
+     * @param $from
      * @param $amount
      * @param $reason
      * @return mixed
      */
-    public function debit($amount, $reason)
+    public function debit($from, $amount, $reason)
     {
-        return Ledger::debit($this, $amount, $reason);
+        return Ledger::debit($this, $from, $amount, $reason);
     }
 
     /**
      * credit entity
-     * 
+     *
+     * @param $to
      * @param $amount
      * @param $reason
      * @return mixed
      */
-    public function credit($amount, $reason)
+    public function credit($to, $amount, $reason)
     {
-        return Ledger::credit($this, $amount, $reason);
+        return Ledger::credit($this, $to, $amount, $reason);
     }
 
     /**

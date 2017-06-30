@@ -2,6 +2,7 @@
 
 namespace FannyPack\Ledger;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class LedgerEntry extends Model
@@ -17,6 +18,7 @@ class LedgerEntry extends Model
         'created_at' => 'datetime'
     ];
 
+
     /**
      * The table associated with the model.
      * 
@@ -27,7 +29,9 @@ class LedgerEntry extends Model
     /**
      * @var array
      */
-    protected $fillable = ['reason', 'debit', 'credit', 'amount', 'current_balance'];
+    protected $fillable = ['reason', 'debit', 'credit', 'amount', 'current_balance', 'money_to', 'money_from'];
+
+    protected $hidden = ['ledgerable_id', 'ledgerable_type', 'current_balance', 'updated_at'];
 
     /**
      * Get the ledgerable entity that the entry belongs to.
