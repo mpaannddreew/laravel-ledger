@@ -225,7 +225,7 @@
                 return uri
             },
             getEntries(options = {offset: 0}) {
-                axios.get('/ledger?' + this.urlEncodeOptions(options))
+                axios.get('/entries/ledger?' + this.urlEncodeOptions(options))
                         .then(response => {
                             this.humanizeEntries(response.data.data)
                         });

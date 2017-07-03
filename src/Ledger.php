@@ -151,7 +151,7 @@ class Ledger
      */
     public function routes()
     {
-        $this->router->group(['namespace' => 'FannyPack\Ledger\Http\Controllers'], function() {
+        $this->router->group(['namespace' => 'FannyPack\Ledger\Http\Controllers', 'prefix' => 'entries'], function() {
             $this->router->resource('ledger', 'LedgerController');
         });
     }
