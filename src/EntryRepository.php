@@ -50,7 +50,7 @@ class EntryRepository
     public function getEntries($days_ago = 0, $offset = 0, $limit = 10)
     {
         if($days_ago)
-            return $this->fromDaysAgo($days_ago, $offset, $limit);
+            return $this->fromDaysAgo(null, $days_ago, $offset, $limit);
 
         $response = [];
         $entries = LedgerEntry::select()->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();;
@@ -118,7 +118,7 @@ class EntryRepository
      * @param int $limit
      * @return array
      */
-    public function findFromDate($date, $days_from_date = 1, $type = null, $offset = 0, $limit = 10)
+    public function findFromDate($date, $days_from_date = 1, $type = null, $offset = 0, $limit = 100)
     {
         $response = [];
         list($year, $month, $day) = $this->getYearMonthDay($date);
@@ -130,8 +130,8 @@ class EntryRepository
                 return [];
 
 
-            $entries = LedgerEntry::select()->where($type, '=', 1)->where('created_at', '>=', $datetime)
-//                ->where('created_at', '<=', $datetime->addDay($days_from_date))
+            $entries = LedgerEntry::select()->where($type, '=', 1)->where('created_at', '>=', $datetime->toDateTimeString())
+                ->where('created_at', '<=', $datetime->addDay($days_from_date)->toDateTimeString())
                 ->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
             foreach ($entries as $entry)
             {
@@ -143,8 +143,8 @@ class EntryRepository
             return $response;
         }
 
-        $entries = LedgerEntry::select()->where('created_at', '>=', $datetime)
-//            ->where('created_at', '<=', $datetime->addDay($days_from_date))
+        $entries = LedgerEntry::select()->where('created_at', '>=', $datetime->toDateTimeString())
+            ->where('created_at', '<=', $datetime->addDay($days_from_date)->toDateTimeString())
             ->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
         foreach ($entries as $entry)
         {
@@ -169,12 +169,12 @@ class EntryRepository
     {
         $response = [];
         $datetime = $this->dateFromThen($days_ago);
-
+        
         if ($type){
             if (!array_has($this->entry_type, strtolower($type)))
                 return [];
 
-            $entries = LedgerEntry::select()->where($type, '=', 1)->where('created_at', '>=', $datetime)->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
+            $entries = LedgerEntry::select()->where($type, '=', 1)->where('created_at', '>=', $datetime->toDateTimeString())->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
             foreach ($entries as $entry)
             {
                 $item = $entry->toArray();
@@ -185,7 +185,7 @@ class EntryRepository
             return $response;
         }
 
-        $entries = LedgerEntry::select()->where('created_at', '>=', $datetime)->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
+        $entries = LedgerEntry::select()->where('created_at', '>=', $datetime->toDateTimeString())->latest()->skip($offset)->take($limit)->orderBy('id', 'desc')->get();
         foreach ($entries as $entry)
         {
             $item = $entry->toArray();
@@ -221,7 +221,7 @@ class EntryRepository
      */
     protected function dateFromThen($days)
     {
-        return $this->time->now()->subDay($days);
+        return $this->time->now()->subDays($days);
     }
 
     /**

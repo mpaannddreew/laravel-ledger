@@ -29,8 +29,8 @@ class LedgerController extends Controller
      */
     public function __construct(Ledger $ledger, Validator $validator)
     {
-        $this->middleware('auth:api')->except('index');
-        $this->middleware(['web', 'auth'])->only('index');
+        $this->middleware('auth:api')->except(['index']);
+        $this->middleware(['web', 'auth'])->only(['index']);
         $this->ledger = $ledger;
         $this->validator = $validator;
     }

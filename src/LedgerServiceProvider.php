@@ -19,11 +19,7 @@ class LedgerServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {            
             $this->publishes([
                 __DIR__.'/../resources/assets/js' => base_path('resources/assets/js'),
-            ], 'ledger-components');
-
-            $this->publishes([
-                __DIR__.'/../resources/assets/css' => base_path('resources/assets/css'),
-            ], 'ledger-components');
+            ], 'ledger');
         }
     }
 

@@ -7,9 +7,9 @@
                         <div class="form-group">
                             <div class="input-group date">
                                 <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
+                                    From Date
                                 </div>
-                                <input type="text" class="form-control pull-right ledger-date" id="from_date" placeholder="From">
+                                <input type="date" class="form-control ledger-date" placeholder="yyyy-mm-dd" v-model="from_date">
                             </div>
                         </div>
                     </div>
@@ -17,28 +17,24 @@
                         <div class="form-group">
                             <div class="input-group date">
                                 <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
+                                    To Date
                                 </div>
-                                <input type="text" class="form-control pull-right ledger-date" id="to_date" placeholder="To">
+                                <input type="date" class="form-control ledger-date" placeholder="yyyy-mm-dd" v-model="to_date">
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <div class="input-group">
+                                <div class="input-group-addon">
+                                    Type
+                                </div>
                                 <select class="form-control pull-right" v-model="entry_type">
                                     <option></option>
                                     <option value="debit">Debits</option>
                                     <option value="credit">Credits</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        <div class="form-group">
-                            <button class = "btn btn-primary" type = "button">
-                                <span class="glyphicon glyphicon-filter"></span> Filter
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -79,8 +75,8 @@
                             </tfoot>
                         </table>
                         <ul class = "pager">
-                            <li class = "previous { disabled: hasOffset }"><a @click="getPrevious">&larr; Newer</a></li>
-                            <li class = "next { disabled: hasEntries }"><a @click="getNext">Older &rarr;</a></li>
+                            <li class="previous" :class="{ disabled: lacksOffset }"><a href="#" @click="getPrevious">&larr; Newer</a></li>
+                            <li class="next" :class="{ disabled: lacksEntries }"><a href="#" @click="getNext">Older &rarr;</a></li>
                         </ul>
                     </div>
                 </div>
@@ -104,12 +100,13 @@
             }
         },
         computed:  {
-            hasEntries: function() {
-                return this.entries.length > 0
+            lacksEntries: function() {
+                return this.entries.length == 0
             },
-            hasOffset: function() {
-                return this.offset > 0
-            }
+            lacksOffset: function() {
+                return this.offset == 0
+            },
+
         },
         /**
          * Prepare the component (Vue 1.x).
@@ -124,16 +121,41 @@
         mounted() {
             this.prepareComponent()
         },
+        watch: {
+            entry_type: function(newValue) {
+                this.offset = 0
+                try {
+                    this.getEntries(this.getOptions())
+                }catch(e) {
+                    console.log(e)
+                }
+            },
+            from_date: function(newValue) {
+                if(this.to_date)
+                {
+                    this.offset = 0
+                    try {
+                        this.getEntries(this.getOptions())
+                    }catch(e) {
+                        console.log(e)
+                    }
+                }
+            },
+            to_date: function(newValue) {
+                if(this.from_date)
+                {
+                    this.offset = 0
+                    try {
+                        this.getEntries(this.getOptions())
+                    }catch(e) {
+                        console.log(e)
+                    }
+                }
+            }
+        },
         methods: {
             prepareComponent() {
                 this.getEntries()
-                $("#from_date").on('change', ()=>{
-                    this.from_date = $("#from_date").val()
-                })
-
-                $("#to_date").on('change', ()=>{
-                    this.to_date = $("#to_date").val()
-                })
             },
             getNext() {
                 if (this.entries.length){
@@ -167,15 +189,15 @@
 
                 if (this.from_date && this.to_date)
                 {
-                    var from_date = moment(this.reorderTime(this.from_date)).add(this.getUtcOffset(moment(this.reorderTime(this.from_date))), 'm')
-                    var to_date = moment(this.reorderTime(this.to_date)).add(this.getUtcOffset(moment(this.reorderTime(this.to_date))), 'm')
+                    var from_date = moment(this.from_date).add(this.getUtcOffset(moment(this.from_date)), 'm')
+                    var to_date = moment(this.to_date).add(this.getUtcOffset(moment(this.to_date)), 'm')
                     var days_from_date = null
                     if (from_date > to_date) {
                         days_from_date = from_date.diff(to_date, 'days')
-                        options["from_date"] = this.reorderTime(this.from_date)
+                        options["from_date"] = this.to_date
                     }else{
                         days_from_date = to_date.diff(from_date, 'days')
-                        options["from_date"] = this.reorderTime(this.to_date)
+                        options["from_date"] = this.from_date
                     }
                     options["days_from_date"] = days_from_date
                 }
@@ -184,7 +206,13 @@
                 return options
             },
             reorderTime(time){
-                return (time).split('/').reverse().join('-')
+                var m = moment(time, "MM-DD-YYYY")
+                var d = [
+                        m.year(),
+                        ((m.month()).toString().split('')).length == 1 ? '0' + (m.month()).toString():(m.month()).toString(),
+                        ((m.date()).toString().split('')).length == 1 ? '0' + (m.date()).toString():(m.date()).toString()
+                    ]
+                return d.join('-')
             },
             getUtcOffset(time) {
                 return time.utcOffset()
@@ -192,7 +220,7 @@
             urlEncodeOptions(options) {
                 var uri = ''
                 for(var i in options) {
-                    uri += i + '=' + options[i]
+                    uri += i + '=' + options[i] + '&'
                 }
                 return uri
             },
