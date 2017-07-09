@@ -40,8 +40,7 @@ class Ledger
      */
     public function debit($to, $from, $amount, $reason)
     {
-        $entry = $to->entries()->first();
-        $balance = $entry ? $entry->current_balance : 0;
+        $balance = $to->balance();
         $data = [
             'money_from' => $from,'debit' => 1, 'reason' => $reason, 'amount' => $amount, 'current_balance' => (int)$balance + (int)$amount
         ];
@@ -61,8 +60,7 @@ class Ledger
      */
     public function credit($from, $to, $amount, $reason)
     {
-        $entry = $from->entries()->first();
-        $balance = $entry ? $entry->current_balance : 0;
+        $balance = $from->balance();
         if ((int)$balance == 0 || (int)$amount > (int)$balance )
             throw new InsufficientBalanceException("Insufficient balance");
         
