@@ -9,8 +9,8 @@
 namespace FannyPack\Ledger\Traits;
 
 
+use FannyPack\Ledger\Facades\Ledger;
 use FannyPack\Ledger\LedgerEntry;
-use Ledger;
 
 trait Ledgerable
 {
