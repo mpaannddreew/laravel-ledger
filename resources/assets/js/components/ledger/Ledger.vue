@@ -101,10 +101,10 @@
         },
         computed:  {
             lacksEntries: function() {
-                return this.entries.length == 0
+                return this.entries.length === 0
             },
             lacksOffset: function() {
-                return this.offset == 0
+                return this.offset === 0
             },
 
         },
@@ -123,7 +123,7 @@
         },
         watch: {
             entry_type: function(newValue) {
-                this.offset = 0
+                this.offset = 0;
                 try {
                     this.getEntries(this.getOptions())
                 }catch(e) {
@@ -133,7 +133,7 @@
             from_date: function(newValue) {
                 if(this.to_date)
                 {
-                    this.offset = 0
+                    this.offset = 0;
                     try {
                         this.getEntries(this.getOptions())
                     }catch(e) {
@@ -144,7 +144,7 @@
             to_date: function(newValue) {
                 if(this.from_date)
                 {
-                    this.offset = 0
+                    this.offset = 0;
                     try {
                         this.getEntries(this.getOptions())
                     }catch(e) {
@@ -159,7 +159,7 @@
             },
             getNext() {
                 if (this.entries.length){
-                    this.offset += 10
+                    this.offset += 10;
                     try {
                         this.getEntries(this.getOptions())
                     }catch(e) {
@@ -169,7 +169,7 @@
             },
             getPrevious() {
                 if (this.offset && (this.offset - 10) >= 0){
-                    this.offset -= 10
+                    this.offset -= 10;
                     try {
                         this.getEntries(this.getOptions())
                     }catch(e) {
@@ -178,7 +178,7 @@
                 }
             },
             getOptions() {
-                var options = {offset: 0}
+                var options = {offset: 0};
                 if (this.offset){
                     options["offset"] = this.offset
                 }
@@ -189,36 +189,36 @@
 
                 if (this.from_date && this.to_date)
                 {
-                    var from_date = moment(this.from_date).add(this.getUtcOffset(moment(this.from_date)), 'm')
-                    var to_date = moment(this.to_date).add(this.getUtcOffset(moment(this.to_date)), 'm')
-                    var days_from_date = null
+                    var from_date = moment(this.from_date)/*.add(this.getUtcOffset(moment(this.from_date)), 'm')*/;
+                    var to_date = moment(this.to_date)/*.add(this.getUtcOffset(moment(this.to_date)), 'm')*/;
+                    var days_from_date = null;
                     if (from_date > to_date) {
-                        days_from_date = from_date.diff(to_date, 'days')
+                        days_from_date = from_date.diff(to_date, 'days');
                         options["from_date"] = this.to_date
                     }else{
-                        days_from_date = to_date.diff(from_date, 'days')
+                        days_from_date = to_date.diff(from_date, 'days');
                         options["from_date"] = this.from_date
                     }
                     options["days_from_date"] = days_from_date
                 }
 
-                console.log(options)
+                console.log(options);
                 return options
             },
             reorderTime(time){
-                var m = moment(time, "MM-DD-YYYY")
+                var m = moment(time, "MM-DD-YYYY");
                 var d = [
                         m.year(),
-                        ((m.month()).toString().split('')).length == 1 ? '0' + (m.month()).toString():(m.month()).toString(),
-                        ((m.date()).toString().split('')).length == 1 ? '0' + (m.date()).toString():(m.date()).toString()
-                    ]
+                        ((m.month()).toString().split('')).length === 1 ? '0' + (m.month()).toString():(m.month()).toString(),
+                        ((m.date()).toString().split('')).length === 1 ? '0' + (m.date()).toString():(m.date()).toString()
+                    ];
                 return d.join('-')
             },
             getUtcOffset(time) {
                 return time.utcOffset()
             },
             urlEncodeOptions(options) {
-                var uri = ''
+                var uri = '';
                 for(var i in options) {
                     uri += i + '=' + options[i] + '&'
                 }
@@ -231,15 +231,15 @@
                         });
             },
             humanizeEntries(data){
-                console.log(JSON.stringify(data))
-                var len = data.length
+                console.log(JSON.stringify(data));
+                var len = data.length;
                 for(var i = 0; i < len; i++)
                 {
-                    data[i]["type"] = data[i].debit ? 'Debit' : 'Credit'
-                    var time = data[i]["created_at"]
-                    var offset = moment(time).utcOffset()
-                    data[i]["date"] = moment(time).add(offset, 'm').format("dddd, MMMM Do YYYY, h:mm:ss a")
-                    data[i]["from_now"] = moment(time).add(offset, 'm').fromNow()
+                    data[i]["type"] = data[i].debit ? 'Debit' : 'Credit';
+                    var time = data[i]["created_at"];
+//                    var offset = moment(time).utcOffset();
+                    data[i]["date"] = moment(time)/*.add(offset, 'm')*/.format("dddd, MMMM Do YYYY, h:mm:ss a");
+                    data[i]["from_now"] = moment(time)/*.add(offset, 'm')*/.fromNow();
 
                     if (data[i].debit){
                         data[i].money_to = data[i].name
