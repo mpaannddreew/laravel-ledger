@@ -26,7 +26,6 @@ php artisan vendor:publish --tag=ledger
 ```
 This command will copy the library's vue components into your codebase
 
-## Environment setup
 Register package routes in your app's RouteServiceProvider
 ```
 Ledger::routes();
