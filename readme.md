@@ -111,6 +111,10 @@ Retrieving all credits of a ledgerable
 $account = Account::find(1);
 debits = $account->credits();
 ```
+Using the provided Ledger.vue component in your blade templates
+```php
+<ledger></ledger>
+```
 
 ## Bugs
 For any bugs found, please email me at andrewmvp007@gmail.com or register an issue at [issues](https://github.com/mpaannddreew/laravel-ledger/issues)
