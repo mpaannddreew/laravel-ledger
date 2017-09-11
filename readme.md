@@ -17,7 +17,7 @@ FannyPack\Ledger\LedgerServiceProvider::class,
 Register Facade
 Register service provider
 ```php
-'Beyonic' => FannyPack\Ledger\Facades\Ledger::class,
+'Ledger' => FannyPack\Ledger\Facades\Ledger::class,
 ```
 
 After the service provider is registered run this command
