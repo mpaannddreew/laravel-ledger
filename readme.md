@@ -81,36 +81,36 @@ Recording debits and credits in one transaction
 $account = Account::find(1);
 $account2 = Account::find(2);
 $account3 = Account::find(3);
-Ledger::transfer($account, [$account2, $account3], $amount, $reason)
+Ledger::transfer($account, [$account2, $account3], $amount, $reason);
 // or
-Ledger::transfer($account, $account2, $amount, $reason)
-Ledger::transfer($account, $account3, $amount, $reason)
+Ledger::transfer($account, $account2, $amount, $reason);
+Ledger::transfer($account, $account3, $amount, $reason);
 ```
 or
 ```php
 $account = Account::find(1);
 $account2 = Account::find(2);
 $account3 = Account::find(3);
-$account->transfer([$account2, $account3], $amount, $reason)
+$account->transfer([$account2, $account3], $amount, $reason);
 // or
-$account->transfer($account2, $amount, $reason)
-$account->transfer($account3, $amount, $reason)
+$account->transfer($account2, $amount, $reason);
+$account->transfer($account3, $amount, $reason);
 ```
 Retrieving all entries of a ledgerable
 ```php
 $account = Account::find(1);
-$entries = $account->entries()
+$entries = $account->entries();
 ```
 Retrieving all debits of a ledgerable
 ```php
 $account = Account::find(1);
-debits = $account->debits()
+debits = $account->debits();
 ```
 Retrieving all credits of a ledgerable
 ```php
 $account = Account::find(1);
-debits = $account->credits()
+debits = $account->credits();
 ```
 
 ## Bugs
-For any bugs found, please email me at andrewmvp007@gmail.com or register an issue at [issues](https://github.com/mpaannddreew/beyonic-laravel/issues)
+For any bugs found, please email me at andrewmvp007@gmail.com or register an issue at [issues](https://github.com/mpaannddreew/laravel-ledger/issues)
