@@ -1,6 +1,7 @@
 {
     "name": "fannypack/ledger",
     "description": "ledger implementation for laravel",
+    "keywords": ["library", "laravel", "php", "ledger"],
     "license": "MIT",
     "authors": [
         {
