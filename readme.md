@@ -8,7 +8,7 @@ This is a simple/basic implementation of a ledger in laravel 5
 - BALANCE COMPUTATION
 
 ## Installation
-git clone https://github.com/mpaannddreew/laravel-ledger.git
+composer require fannypack/ledger
 
 Register service provider
 ```php
