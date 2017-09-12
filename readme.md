@@ -24,6 +24,10 @@ After the service provider is registered run this command
 ```
 php artisan vendor:publish --tag=ledger
 ```
+Run migrations
+```
+php artisan migrate
+```
 This command will copy the library's vue components into your codebase
 
 Register package routes in your app's RouteServiceProvider
