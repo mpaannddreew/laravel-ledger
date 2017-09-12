@@ -30,9 +30,15 @@ php artisan migrate
 ```
 This command will copy the library's vue components into your codebase
 
-Register package routes in your app's RouteServiceProvider
+Register package routes in your app's RouteServiceProvider boot method
 ```
-Ledger::routes();
+public function boot()
+{
+    //
+
+    parent::boot();
+    Ledger::routes();
+}
 ```
 
 ## Usage
