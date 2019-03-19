@@ -52,9 +52,9 @@ trait Ledgerable
      * @param $reason
      * @return mixed
      */
-    public function debit($from, $amount, $reason)
+    public function debit($from, $amount, $amount_currency, $reason)
     {
-        return Ledger::debit($this, $from, $amount, $reason);
+        return Ledger::debit($this, $from, $amount, $amount_currency, $reason);
     }
 
     /**
@@ -65,9 +65,9 @@ trait Ledgerable
      * @param $reason
      * @return mixed
      */
-    public function credit($to, $amount, $reason)
+    public function credit($to, $amount, $amount_currency, $reason)
     {
-        return Ledger::credit($this, $to, $amount, $reason);
+        return Ledger::credit($this, $to, $amount, $amount_currency, $reason);
     }
 
     /**
@@ -77,7 +77,10 @@ trait Ledgerable
      */
     public function balance()
     {
-        return Ledger::balance($this);
+        $credits = $this->credits()->sum('amount');
+        $debits = $this->debits()->sum('amount');
+        $balance = $debits - $credits;
+        return $balance;
     }
 
     /**

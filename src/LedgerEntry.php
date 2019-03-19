@@ -29,7 +29,7 @@ class LedgerEntry extends Model
     /**
      * @var array
      */
-    protected $fillable = ['reason', 'debit', 'credit', 'amount', 'current_balance', 'money_to', 'money_from'];
+    protected $fillable = ['reason', 'debit', 'credit', 'amount_currency', 'amount', 'current_balance_currency', 'current_balance', 'money_to', 'money_from'];
 
     protected $hidden = ['ledgerable_id', 'ledgerable_type', 'current_balance', 'updated_at'];
 

@@ -1,9 +1,7 @@
 <?php
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-
 class CreateLedgerEntriesTable extends Migration
 {
     /**
@@ -21,12 +19,13 @@ class CreateLedgerEntriesTable extends Migration
             $table->text('reason');
             $table->boolean('credit')->default(0);
             $table->boolean('debit')->default(0);
-            $table->string('amount');
-            $table->string('current_balance');
+            $table->float('amount', 8, 2);
+            $table->string('amount_currency')->nullable();
+            $table->float('current_balance', 8, 2);
+            $table->string('current_balance_currency')->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *
