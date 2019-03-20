@@ -38,11 +38,19 @@ class Ledger
      * @param $reason
      * @return mixed
      */
-    public function debit($to, $from, $amount, $reason)
+    public function debit($to, $from, $amount, $amount_currency, $reason)
     {
         $balance = $to->balance();
+        $current_balance_currency = isset($to->current_balance_currency) ? $to->current_balance_currency : Null;
+        
         $data = [
-            'money_from' => $from,'debit' => 1, 'reason' => $reason, 'amount' => $amount, 'current_balance' => (int)$balance + (int)$amount
+            'money_from' => $from,
+            'debit' => 1, 
+            'reason' => $reason, 
+            'amount' => $amount, 
+            'amount_currency' => $amount_currency,
+            'current_balance' => (float)$balance + (float)$amount,
+            'current_balance_currency' => $current_balance_currency
         ];
 
         return $this->log($to, $data);
@@ -58,14 +66,22 @@ class Ledger
      * @return mixed
      * @throws InsufficientBalanceException
      */
-    public function credit($from, $to, $amount, $reason)
+    public function credit($from, $to, $amount, $amount_currency, $reason)
     {
         $balance = $from->balance();
-        if ((int)$balance == 0 || (int)$amount > (int)$balance )
+        $current_balance_currency = isset($from->current_balance_currency) ? $from->current_balance_currency : Null;
+
+        if ((float)$balance == 0 || (float)$amount > (float)$balance )
             throw new InsufficientBalanceException("Insufficient balance");
         
         $data = [
-            'money_to' => $to,'credit' => 1, 'reason' => $reason, 'amount' => $amount, 'current_balance' => (int)$balance - (int)$amount
+            'money_to' => $to,
+            'credit' => 1, 
+            'reason' => $reason, 
+            'amount' => $amount,
+            'amount_currency' => $amount_currency, 
+            'current_balance' => (float)$balance - (float)$amount,
+            'current_balance_currency' => $current_balance_currency
         ];
 
         return $this->log($from, $data);
@@ -87,7 +103,7 @@ class Ledger
      * balance of a ledgerable instance
      * 
      * @param $ledgerable
-     * @return int
+     * @return float
      */
     public function balance($ledgerable)
     {
@@ -111,7 +127,7 @@ class Ledger
         if (!is_array($to))
             return $this->transferOnce($from, $to, $amount, $reason);
 
-        $total_amount = (int)$amount * count($to);
+        $total_amount = (float)$amount * count($to);
         if ($total_amount > $from->balance())
             throw new InsufficientBalanceException("Insufficient balance");
         
