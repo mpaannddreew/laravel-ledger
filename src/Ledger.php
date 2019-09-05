@@ -66,7 +66,7 @@ class Ledger
      * @return mixed
      * @throws InsufficientBalanceException
      */
-    public function credit($from, $to, $amount, $amount_currency, $reason)
+    public function credit($from, $to, $amount, $amount_currency="UGX", $reason)
     {
         $balance = $from->balance();
         $current_balance_currency = isset($from->current_balance_currency) ? $from->current_balance_currency : Null;
@@ -107,8 +107,10 @@ class Ledger
      */
     public function balance($ledgerable)
     {
-        $entry = $ledgerable->entries()->first();
-        return $entry ? $entry->current_balance : 0;
+        $credits = $ledgerable->credits()->sum('amount');
+        $debits = $ledgerable->debits()->sum('amount');
+        $balance = $debits - $credits;
+        return $balance;
     }
 
     /**
@@ -122,7 +124,7 @@ class Ledger
      * @throws InvalidRecipientException
      * @throws InsufficientBalanceException
      */
-    public function transfer($from, $to, $amount, $reason = "funds transfer")
+    public function transfer($from, $to, $amount, $amount_currency="UGX", $reason = "funds transfer")
     {
         if (!is_array($to))
             return $this->transferOnce($from, $to, $amount, $reason);
@@ -134,7 +136,7 @@ class Ledger
         $recipients = [];
         foreach ($to as $recipient)
         {
-            array_push($recipients, $this->transferOnce($from, $recipient, $amount, $reason));
+            array_push($recipients, $this->transferOnce($from, $recipient, $amount, $amount_currency, $reason));
         }
         
         return $recipients;
@@ -151,13 +153,13 @@ class Ledger
      * @throws InsufficientBalanceException
      * @throws InvalidRecipientException
      */
-    protected function transferOnce($from, $to, $amount, $reason)
+    protected function transferOnce($from, $to, $amount, $amount_currency="UGX", $reason)
     {
         if (get_class($from) == get_class($to) && $from->id == $to->id)
             throw new InvalidRecipientException("Source and recipient cannot be the same object");
 
-        $this->credit($from, $to->name, $amount, $reason);
-        return $this->debit($to, $from->name, $amount, $reason);
+        $this->credit($from, $to->name, $amount, $amount_currency ,$reason);
+        return $this->debit($to, $from->name, $amount, $amount_currency, $reason);
     }
 
     /**
