@@ -40,6 +40,7 @@ class LedgerController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function index(Request $request)
     {
@@ -95,10 +96,12 @@ class LedgerController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param Request $request
      * @param $entry_id
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function show($entry_id)
+    public function show(Request $request, $entry_id)
     {
         $this->validator->make(['entry_id' => $entry_id], [
             'entry_id' => 'required|numeric',
